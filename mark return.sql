@@ -1,3 +1,4 @@
+-- This is a PL/SQL file.
 DECLARE
     V_D_DO_CONTAINER            NUMBER := &D_DO_CONTAINER_ID;
     V_SOBJECT_ID                NUMBER;
@@ -5,7 +6,6 @@ DECLARE
     v_count_all_rows_usr_proc   NUMBER;
     V_D_RESERVATION_MAP_ID      NUMBER;
     V_D_DO_CONTAINER_POS_ID     NUMBER;
-
     e_message VARCHAR2(4000);
 BEGIN
     BEGIN
@@ -31,7 +31,6 @@ BEGIN
                AND dr.IS_CANCELED = 'N'
                AND dr.USR_PROC IS NOT NULL;
 
-
         IF v_count_all_rows_usr_proc = v_count_all_rows THEN
             SELECT dr.D_RESERVATION_MAP_ID
               INTO V_D_RESERVATION_MAP_ID
@@ -49,14 +48,14 @@ BEGIN
                    dr.DATE_PROC = NULL
              WHERE dr.D_RESERVATION_MAP_ID = V_D_RESERVATION_MAP_ID;
              
-             DBMS_OUTPUT.PUT_LINE('��������� ����� � D_RESERVATION_MAP: ' || SQL%ROWCOUNT);
+             DBMS_OUTPUT.PUT_LINE('Обновлено строк в D_RESERVATION_MAP: ' || SQL%ROWCOUNT);
 
             UPDATE wms.smvm_tbl sm
                SET sm.SMVM_STATUS_ID = 0
              WHERE     sm.D_RESERVATION_MAP_ID = V_D_RESERVATION_MAP_ID
                    AND sm.SMVM_STATUS_ID IN (1, 0);
                    
-             DBMS_OUTPUT.PUT_LINE('��������� ����� � SMVM_TBL: ' || SQL%ROWCOUNT);
+             DBMS_OUTPUT.PUT_LINE('Обновлено строк в SMVM_TBL: ' || SQL%ROWCOUNT);
 
             SELECT dp.D_DO_CONTAINER_POS_ID
               INTO V_D_DO_CONTAINER_POS_ID
@@ -77,7 +76,7 @@ BEGIN
                    AND dp.D_DO_CONTAINER_POS_ID = V_D_DO_CONTAINER_POS_ID;
                    
                    
-             DBMS_OUTPUT.PUT_LINE('��������� ����� � D_DO_CONTAINER_POS: ' || SQL%ROWCOUNT);
+             DBMS_OUTPUT.PUT_LINE('Обновлено строк в D_DO_CONTAINER_POS: ' || SQL%ROWCOUNT);
 
             UPDATE WMS.D_DO_CONTAINER dp
                SET dp.D_DO_CONTAINER_STATUS_ID = 2
@@ -85,7 +84,7 @@ BEGIN
                    AND dp.D_DO_CONTAINER_STATUS_ID = 3;
                    
                    
-             DBMS_OUTPUT.PUT_LINE('��������� ����� � D_DO_CONTAINER: ' || SQL%ROWCOUNT);
+             DBMS_OUTPUT.PUT_LINE('Обновлено строк в D_DO_CONTAINER: ' || SQL%ROWCOUNT);
 
             UPDATE D_DO_PACK dp
                SET dp.D_DO_PACK_STATUS_ID = 20
@@ -100,17 +99,17 @@ BEGIN
                    AND dp.D_DO_PACK_STATUS_ID = 30;
                    
                    
-             DBMS_OUTPUT.PUT_LINE('��������� ����� � D_DO_PACK: ' || SQL%ROWCOUNT);
+             DBMS_OUTPUT.PUT_LINE('Обновлено строк в D_DO_PACK: ' || SQL%ROWCOUNT);
 
-            DBMS_OUTPUT.PUT_LINE('��� ��!');
+            DBMS_OUTPUT.PUT_LINE('все ок!');
         ELSE
-            DBMS_OUTPUT.PUT_LINE('�� ������ ���-�� �����');
+            DBMS_OUTPUT.PUT_LINE('Не равное кол-во строк');
         END IF;
 
     EXCEPTION
         WHEN OTHERS THEN
             e_message := SQLERRM;
             ROLLBACK;
-            DBMS_OUTPUT.PUT_LINE('������: ' || e_message);
+            DBMS_OUTPUT.PUT_LINE('Ошибка: ' || e_message);
     END;
 END;
